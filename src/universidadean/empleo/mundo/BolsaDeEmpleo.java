@@ -237,23 +237,13 @@ public class BolsaDeEmpleo {
      * @return Se retorn� la posici�n donde se encuentra el aspirante con m�s edad. Si no hay aspirantes en la bolsa se retorn� -1
      */
     public int buscarAspiranteMayorEdad() {
-        int posicion = -1;
-
         // TODO: Realizar el ejercicio correspondiente
-        Collections.sort(this.aspirantes, new Comparator<Aspirante>() {
-    	    @Override
-    	    public int compare(Aspirante o1, Aspirante o2) {
-    	        return o1.darEdad() + o2.darEdad();
-    	    }
-    	});
-        
         this.aspirantesNombre = new ArrayList<>();
         this.aspirantes.forEach(aspirante->{
         	this.aspirantesNombre.add(aspirante.darEdad());
         });
         
-        return this.aspirantesNombre.indexOf(Collections.max(this.aspirantesNombre));
-        
+        return this.aspirantesNombre.indexOf(Collections.max(this.aspirantesNombre));        
     }
 
     /**
@@ -262,11 +252,13 @@ public class BolsaDeEmpleo {
      * @return Se retorn� la posici�n donde se encuentra el aspirante con mayor experiencia. Si no hay aspirantes en la bolsa se retorn� -1
      */
     public int buscarAspiranteMayorExperiencia() {
-        int posicion = -1;
-
         // TODO: Realizar el ejercicio correspondiente
-
-        return posicion;
+    	this.aspirantesNombre = new ArrayList<>();
+        this.aspirantes.forEach(aspirante->{
+        	this.aspirantesNombre.add(aspirante.darAniosExperiencia());
+        });
+        
+        return this.aspirantesNombre.indexOf(Collections.max(this.aspirantesNombre));
     }
 
     /**
