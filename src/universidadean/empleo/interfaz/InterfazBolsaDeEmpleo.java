@@ -227,7 +227,7 @@ public class InterfazBolsaDeEmpleo extends JFrame {
     public void buscar() {
         String NombreBuscar = JOptionPane.showInputDialog(this, "Nombre");
         if (NombreBuscar != null) {
-            int posicion = bolsa.buscarAspirante(NombreBuscar, false);
+            int posicion = bolsa.buscarAspirante(NombreBuscar);
 
             actualizarLista();
             if (posicion != -1) {

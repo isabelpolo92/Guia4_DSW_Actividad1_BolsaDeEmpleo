@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -75,7 +76,7 @@ public class BolsaDeEmpleo {
      */
 
     public boolean agregarAspirante(String nombreA, String profesionA, int aniosExperienciaA, int edadA, String telefonoA, String imagenA) {
-        int aspiranteBuscado = buscarAspirante(nombreA, true);
+        int aspiranteBuscado = buscarAspirante(nombreA);
         boolean agregado = false;
         if (aspiranteBuscado == -1) {
             Aspirante nuevoAspirante = new Aspirante(nombreA, profesionA, aniosExperienciaA, edadA, telefonoA, imagenA);
@@ -92,12 +93,19 @@ public class BolsaDeEmpleo {
      */
     public void ordenarPorNombre() {
         // TODO: Realizar el ejercicio correspondiente
-    	Collections.sort(this.aspirantes, new Comparator<Aspirante>() {
-    	    @Override
-    	    public int compare(Aspirante o1, Aspirante o2) {
-    	        return o1.darNombre().compareTo(o2.darNombre());
-    	    }
-    	});
+    	Aspirante aux;
+        for(int i = 0;i < aspirantes.size()-1;i++){
+            for(int j = 0;j < aspirantes.size()-i-1;j++){
+                // El if de abajo va a determinar si el primero es menor que el segundo
+                // y si es true, se va a realizar el swap con una variable aux para
+                // mover los objetos del array
+                if(aspirantes.get(j).darNombre().compareTo(aspirantes.get(j+1).darNombre()) > 0 ){    
+                    aux = aspirantes.get(j+1);
+                    aspirantes.set(j+1,aspirantes.get(j));
+                    aspirantes.set(j,aux);
+                }
+            }
+        }
     }
 
     /**
@@ -105,13 +113,19 @@ public class BolsaDeEmpleo {
      * <b>post: </b>La lista de aspirantes est� ordenada por edad
      */
     public void ordenarPorEdad() {
-        // TODO: Realizar el ejercicio correspondiente
-    	Collections.sort(this.aspirantes, new Comparator<Aspirante>() {
-    	    @Override
-    	    public int compare(Aspirante o1, Aspirante o2) {
-    	        return o1.darEdad() - o2.darEdad();
-    	    }
-    	});
+        // TODO: Realizar el ejercicio correspondiente    	
+    	for (int sinord = 0; sinord < this.aspirantes.size() - 1; sinord ++) {
+    		int minPos = sinord ; // Halla la posición del mínimo
+    		for (int i = sinord + 1; i < this.aspirantes.size(); i++) {
+    			//Método de Ordenación: selección
+    			if (this.aspirantes.get(i).darEdad() < this.aspirantes.get(minPos).darEdad()) { minPos = i; }
+    		}
+    		if (minPos != sinord ) { 
+    			Aspirante temp = this.aspirantes.get(minPos);
+    			this.aspirantes.set(minPos,this.aspirantes.get(sinord)); 
+    			this.aspirantes.set(sinord,temp);
+    		} // Intercambio
+    	}    	
     }
 
     /**
@@ -120,12 +134,19 @@ public class BolsaDeEmpleo {
      */
     public void ordenarPorProfesion() {
         // TODO: Realizar el ejercicio correspondiente
-    	Collections.sort(this.aspirantes, new Comparator<Aspirante>() {
-    	    @Override
-    	    public int compare(Aspirante o1, Aspirante o2) {
-    	        return o1.darProfesion().compareTo(o2.darProfesion());
-    	    }
-    	});
+    	Aspirante aux;
+        for(int i = 0;i < aspirantes.size()-1;i++){
+            for(int j = 0;j < aspirantes.size()-i-1;j++){
+                // El if de abajo va a determinar si el primero es menor que el segundo
+                // y si es true, se va a realizar el swap con una variable aux para
+                // mover los objetos del array
+                if(aspirantes.get(j).darProfesion().compareTo(aspirantes.get(j+1).darProfesion()) > 0 ){    
+                    aux = aspirantes.get(j+1);
+                    aspirantes.set(j+1,aspirantes.get(j));
+                    aspirantes.set(j,aux);
+                }
+            }
+        }
     }
 
     /**
@@ -134,12 +155,16 @@ public class BolsaDeEmpleo {
      */
     public void ordenarPorAniosDeExperiencia() {
         // TODO: Realizar el ejercicio correspondiente
-    	Collections.sort(this.aspirantes, new Comparator<Aspirante>() {
-    	    @Override
-    	    public int compare(Aspirante o1, Aspirante o2) {
-    	        return o1.darAniosExperiencia() - o2.darAniosExperiencia();
-    	    }
-    	});
+    	for (int i = 1; i < this.aspirantes.size(); i++) {
+    		Aspirante numberToInsert = this.aspirantes.get(i);
+    	    int compareIndex = i;
+    	    
+    	    while (compareIndex > 0 && this.aspirantes.get(compareIndex - 1).darAniosExperiencia() > numberToInsert.darAniosExperiencia()) {
+    	    	this.aspirantes.set(compareIndex, this.aspirantes.get(compareIndex - 1));
+    	       compareIndex--; 
+    	    }    	    
+    	    this.aspirantes.set(compareIndex, numberToInsert);
+    	}
     }
 
     /**
@@ -148,18 +173,14 @@ public class BolsaDeEmpleo {
      * @param nombre El nombre del aspirante buscado - nombre!=null
      * @return Se retorn� la posici�n donde se encuentra un aspirante con el nombre dado. Si no se encuentra ning�n aspirante con ese nombre se retorn� -1.
      */
-    public int buscarAspirante(String nombre, Boolean agregando) {
+    public int buscarAspirante(String nombre) {
         this.posicion = -1;
         // TODO: B�squeda lineal por nombre
-        if(!agregando) {
-        	Aspirante encontrado = aspirantes.stream()
-        	        .filter(aspirante -> {        	        	
-        	        	this.posicion++;
-        	        	return aspirante.darNombre().toLowerCase().contains(nombre.toLowerCase());
-        	        	})
-        	        .findAny()
-        	        .orElse(null);
-        }        
+        for(int i=0; i<aspirantes.size(); i++) {
+        	if(aspirantes.get(i).darNombre().toLowerCase().contains(nombre.toLowerCase())) {
+        		posicion = i;
+        	}
+        }
         
         return this.posicion;
     }
@@ -173,19 +194,23 @@ public class BolsaDeEmpleo {
      */
     public int buscarBinarioPorNombre(String nombre) {
         this.posicion = -1;
-        int ini = 0;
-        int fin = aspirantes.size() - 1;
-        while (fin >= ini) {
-           int half = (int) Math.floor((ini + fin) / 2);
-           if (aspirantes.get(half).darNombre().compareTo(nombre) == 0) {
-               posicion = half;
-               fin = -1;
-           } else if (aspirantes.get(half).darNombre().compareTo(nombre) < 0)
-               ini = half + 1;
-           else
-               fin = half - 1;
+        
+        int left = 0, right = this.aspirantes.size() - 1; 
+        
+        while (left <= right){ 
+            int mid = left + (right - left) / 2; 
+    
+            if (this.aspirantes.get(mid).darNombre().contains(nombre)) 
+                return mid; 
+    
+            if (this.aspirantes.get(mid).darNombre().compareTo(nombre) >= 0) 
+                left = mid + 1; 
+    
+            else
+                right = mid - 1; 
         }
-        return posicion;
+    
+        return -1; 
     }
 
 
@@ -255,8 +280,8 @@ public class BolsaDeEmpleo {
         boolean contratado = false;
 
         // TODO: Realizar el ejercicio correspondiente
-        if(buscarAspirante(nombre, false) != -1 ) {
-        	aspirantes.remove(buscarAspirante(nombre, false));
+        if(buscarAspirante(nombre) != -1 ) {
+        	aspirantes.remove(buscarAspirante(nombre));
         	contratado = true;
         }
         return contratado;
